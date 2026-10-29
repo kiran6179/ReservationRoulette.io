@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Interactive Reservation Roulette problem-based learning activity for IHM Shri Shakti hospitality students.">
+<meta name="theme-color" content="#6d28d9">
+<title>Reservation Roulette | IHM Shri Shakti</title>
+<link rel="stylesheet" href="style.css"></head><body>
+<header><div class="logo"><img src="ihm-shri-shakti-logo.png" alt="IHM Shri Shakti logo"></div>
+<div><h1>Reservation Roulette</h1><p>Problem-Based Learning · Foundation Course in Rooms Division · Units 1–3 · Created by Dr. Kiran Mayi Audina</p></div></header>
+<div class="w">
+<nav id="nav"></nav>
+
+<section class="sec" id="s0"><div class="card"><h2>1 · The Problem</h2>
+<p><b>Friday, Diwali festival week.</b> You are the Reservations Manager of <b>Hotel Shri Shakti Grand</b>, a <b>100-room medium hotel</b> (Unit 2: medium = 26–100 lettable rooms). The General Manager asks: <i>“How many rooms beyond 100 should we sell tonight?”</i></p>
+<p>Some guests hold <b>guaranteed reservations</b> (deposit, credit card, company, airline, travel agent). Others hold <b>non-guaranteed (6 PM) reservations</b>. Guaranteed no-shows are charged, so the hotel keeps one day’s room charge; non-guaranteed no-shows pay nothing. If more guests arrive than rooms, someone is <b>walked</b>, which costs money and harms reputation at the most critical stage: Arrival.</p>
+<div class="chips"><span class="hot">1 Pre-Arrival</span><span class="hot">2 Arrival</span><span>3 Stay</span><span>4 Departure</span><span>5 Post Departure</span></div>
+<p class="ref">Unit 3 §3.2 Guest cycle · §3.3 Types of reservation · Unit 1 §1.5.1 Reservation section, Reception, Guest Relations, Night Audit · Unit 2 §2.4 Rack rate</p>
+<h3>Your mission</h3><ol><li><b>Predict</b> a policy before touching the model.</li><li><b>Investigate</b> using the controls and record observations.</li><li><b>Compare</b> two scenarios.</li><li><b>Justify and recommend</b> to the GM.</li><li><b>Reflect</b> on what the model leaves out.</li></ol>
+<button class="btn" onclick="UI.go(1)">Start: make your prediction →</button></div></section>
+
+<section class="sec" id="s1"><div class="card"><h2>2 · Predict</h2><p>Current baseline: ADR ₹5,000, 60% guaranteed, 15% of non-guaranteed guests do not show, walk cost ₹8,000 per guest.</p>
+<label>How many extra rooms (overbooking) will earn the most? <select id="pred" data-k="pred"><option value="">Choose…</option><option>0</option><option>2</option><option>5</option><option>8</option><option>12</option><option>20</option></select></label>
+<label>At that level, how risky is walking at least one guest? <select id="risk" data-k="risk"><option value="">Choose…</option><option value="l">Low (under 25% of nights)</option><option value="m">Medium (25–60%)</option><option value="h">High (over 60%)</option></select></label>
+<label>Why? (use unit terms: guaranteed, no-show, retention, walked guest)<textarea data-k="predwhy"></textarea></label>
+<button class="btn" onclick="UI.go(2)">Test my prediction →</button></div></section>
+
+<section class="sec" id="s2"><div class="card"><h2>3 · Investigate</h2><div class="msg" id="predmsg"></div>
+<div class="grid"><div>
+<label>Overbooking: <b id="vo"></b> extra rooms<input type="range" id="over" min="0" max="25" value="5"></label>
+<label>Guaranteed share of bookings: <b id="vg"></b>%<input type="range" id="gs" min="20" max="95" step="5" value="60"></label>
+<label>Average daily rate (ADR): <b id="va"></b><input type="range" id="adr" min="3000" max="9000" step="250" value="5000"></label></div><div>
+<label>Cost per walked guest: <b id="vc"></b><input type="range" id="comp" min="2000" max="20000" step="500" value="8000"></label>
+<label>No-show rate, non-guaranteed: <b id="vn"></b>%<input type="range" id="nsn" min="5" max="35" value="15"></label>
+<p class="ref">Fixed: 100 rooms · 4% guaranteed no-show · guaranteed no-shows pay one night’s rate · walk-ins fill leftover rooms.</p>
+<button class="btn x" onclick="UI.reseed()">Re-run simulated nights</button></div></div></div>
+<div class="kpis" id="kpis"></div>
+<div class="card"><h3>Arrivals on 1,500 simulated nights</h3><canvas id="c1"></canvas><p class="ref">Red bars: nights when arrivals exceed 100 rooms, so guests are walked.</p></div>
+<div class="card"><h3>Net contribution by overbooking level</h3><canvas id="c2"></canvas><p class="ref">Net = room revenue + retained no-show charges − walk costs. ★ marks the best level for the current settings; ● is your setting.</p></div>
+<div class="card"><h3>Investigation notebook</h3><label>What do you notice? <input type="text" id="note" placeholder="e.g. when I raised guaranteed share, the best level moved…"></label>
+<button class="btn g" onclick="NB.add()">＋ Record this observation</button><button class="btn x" onclick="NB.exportTxt()">Download notebook (.txt)</button>
+<div class="tbl"><table id="nbt"></table></div></div></section>
+
+<section class="sec" id="s3"><div class="card"><h2>4 · Compare</h2><p>Set sliders in Investigate, then save the current settings as Scenario A, change them, and save as Scenario B. Try: guaranteed share 30% vs 90%.</p>
+<button class="btn o" onclick="CMP.save('A')">Save current as A</button><button class="btn g" onclick="CMP.save('B')">Save current as B</button>
+<div class="tbl"><table id="cmp"></table></div>
+<label>Which differences matter most, and why does the best overbooking level shift?<textarea data-k="cmpwhy"></textarea></label></div></section>
+
+<section class="sec" id="s4"><div class="card"><h2>5 · Justify &amp; Recommend</h2>
+<label>Your recommendation to the GM<select id="rec" data-k="rec"><option value="">Choose…</option><option>Conservative: 0–3 extra rooms</option><option>Balanced: 4–8 extra rooms</option><option>Aggressive: 9 or more extra rooms</option><option>Dynamic: vary by guaranteed share and cost</option></select></label>
+<label>Justify with evidence from your notebook<textarea id="just" data-k="just" style="min-height:110px"></textarea></label>
+<button class="btn" onclick="REC.check()">Check my argument</button><div id="chk"></div></div></section>
+
+<section class="sec" id="s5"><div class="card"><h2>6 · Reflect</h2>
+<label>1. The model counts rupees only. Which guest-cycle stage is damaged when a guest is walked, and which front office section should handle the recovery? <span class="ref">(Unit 3 §3.2.2; Unit 1 §1.5.1)</span><textarea data-k="r1"></textarea></label>
+<label>2. Why does a higher share of guaranteed reservations change the best overbooking level? <span class="ref">(Unit 3 §3.3.1–3.3.2)</span><textarea data-k="r2"></textarea></label>
+<label>3. How would your policy differ for a small hotel (25 rooms or fewer) or a transit/airport hotel? <span class="ref">(Unit 2 §1.1.1, §2.1.3)</span><textarea data-k="r3"></textarea></label>
+<label>4. What did your prediction miss, and what would you do differently next time?<textarea data-k="r4"></textarea></label>
+<button class="btn g" onclick="NB.exportTxt()">Download my full notebook (.txt)</button></div></section>
+<section class="sec" id="s6"><div class="card"><h2>7 · Instructor Solutions &amp; Scenario Answer Guide</h2>
+<p><b>How to use:</b> These are model answers and expected trends, not one fixed answer for every slider combination. The simulation is stochastic, so the exact best overbooking level and net contribution depend on the settings and simulated arrivals. Use the live chart and figures as evidence.</p>
+<div class="msg"><b>Core formula used by this page</b><br>Average net contribution per night = room revenue + guaranteed no-show charges retained − walking costs.<br><span class="ref">In the code: net = (rooms accommodated × ADR) + (guaranteed no-shows × ADR) − (guests walked × walking cost), averaged over 1,500 simulated nights.</span></div>
+<h3>Model answers: Predict</h3>
+<ul><li><b>How many extra rooms should the hotel sell?</b> There is no universally correct number. At the default settings (100 rooms, ADR ₹5,000, 60% guaranteed bookings, 15% non-guaranteed no-show rate and ₹8,000 walking cost), compare the net-contribution curve and select the overbooking level with the highest simulated value. The page marks it with ★.</li><li><b>How risky is walking?</b> Use the displayed “Nights with a walked guest” percentage. Low is under 25%; medium is 25–60%; high is over 60%. The correct risk category depends on the selected overbooking level and current assumptions.</li><li><b>Why?</b> Some reservations will not show. Overbooking can replace rooms likely to remain empty, but if too many guests arrive, the hotel must walk guests and pay compensation.</li></ul>
+<h3>Scenario guide: what should happen when sliders change?</h3>
+<div class="tbl"><table><tr><th>Change</th><th>Expected effect</th><th>Reason / interpretation</th></tr>
+<tr><td>Overbooking increases</td><td>Occupancy and room revenue may rise at first; walking risk and cost usually rise at higher levels.</td><td>The hotel sells more than 100 rooms to offset no-shows, but arrivals can exceed capacity.</td></tr>
+<tr><td>Guaranteed share increases</td><td>Expected no-shows generally fall because guaranteed no-show rate is fixed at 4%, below the adjustable non-guaranteed rate.</td><td>The hotel may need less overbooking; guaranteed no-shows still generate a retained one-night charge.</td></tr>
+<tr><td>Non-guaranteed no-show rate increases</td><td>More booked guests are likely not to arrive; a higher overbooking level may become attractive.</td><td>There is more risk of empty rooms, but the best level still depends on walking cost and other settings.</td></tr>
+<tr><td>ADR increases</td><td>Revenue from occupied rooms and retained guaranteed no-show charges rise; the cost of walking remains as set.</td><td>Empty rooms have a higher opportunity cost, but walking a guest may also forfeit a higher-value stay in real operations.</td></tr>
+<tr><td>Cost per walked guest increases</td><td>The best level usually shifts toward less aggressive overbooking.</td><td>Walking becomes more expensive, so the model penalises nights when arrivals exceed capacity more heavily.</td></tr>
+<tr><td>Guaranteed share decreases</td><td>More bookings are subject to the higher non-guaranteed no-show rate (unless that slider is changed).</td><td>More no-shows can leave rooms empty, potentially making some overbooking useful.</td></tr>
+<tr><td>Walk cost decreases</td><td>Higher overbooking can become more attractive, all else equal.</td><td>The financial penalty for excess arrivals is smaller, although guest experience still matters.</td></tr>
+</table></div>
+<h3>Model answers: Compare and Recommend</h3>
+<ul><li><b>Scenario A vs B:</b> Compare occupancy, RevPAR, net contribution, walk risk and average guests walked. Recommend the scenario with the stronger net contribution only after considering its walking risk and service impact. A higher occupancy rate alone does not prove a better decision.</li><li><b>Recommendation to the GM:</b> A defensible answer is “Use a dynamic overbooking limit based on guaranteed booking share, no-show history, ADR and the current cost of walking. Choose the level with the highest simulated net contribution, but apply a service-risk limit and review it against actual hotel data.”</li><li><b>Conservative (0–3 extra rooms):</b> Suitable when walking is very costly, the hotel is small, guest loyalty is important, or forecasts are uncertain. Risk is lower but empty rooms may remain.</li><li><b>Balanced (4–8 extra rooms):</b> A reasonable starting range for testing, not a guaranteed optimum. Validate it with the model and actual no-show data.</li><li><b>Aggressive (9+ extra rooms):</b> May offset many no-shows but can substantially increase walking risk. Use only if evidence supports it and a robust relocation plan exists.</li></ul>
+<h3>Model answers: Reflect</h3>
+<ol><li><b>Which guest-cycle stage is damaged and who handles recovery?</b> The Arrival stage is directly affected because a guest with a confirmed reservation cannot be accommodated. Reception/front office should coordinate immediately with the Front Office Manager and Guest Relations; reservations and duty management should arrange a suitable alternative hotel, transport if appropriate, clear communication and compensation according to policy.</li><li><b>Why does guaranteed share change the best level?</b> In this model, guaranteed bookings have a 4% no-show rate, while the non-guaranteed no-show rate is adjustable and defaults to 15%. A larger guaranteed share therefore generally reduces expected no-shows, so less overbooking may be needed. Guaranteed no-shows also pay one night’s rate in this simulation.</li><li><b>Small hotel or airport/transit hotel?</b> A small hotel should generally be more cautious because even one walked guest represents a larger share of its inventory and may harm reputation disproportionately. An airport/transit hotel may have volatile arrival patterns and time-sensitive guests; it should use reliable demand data, stronger confirmation practices and a clear relocation plan rather than applying a fixed overbooking number blindly.</li><li><b>What might a prediction miss?</b> It may overlook variation in arrivals, the different no-show rates for guaranteed and non-guaranteed bookings, the ₹ cost of walking, and the difference between occupancy and contribution. A better approach is to test multiple settings, record evidence, compare scenarios and acknowledge that the model excludes reputation, loyalty, room-type constraints and many real operating costs.</li></ol>
+<h3>Important limitations to tell students</h3>
+<ul><li>The page uses simulated nights, not a hotel’s actual historical data.</li><li>The model values each accommodated guest at the same ADR and does not model room types, overbooking of specific categories, upgrades or lost ancillary spend.</li><li>It treats guaranteed no-show charges as retained revenue and subtracts a fixed compensation cost for each walked guest.</li><li>It does not quantify reputation damage, loyalty loss, staff time, transport, legal obligations or all operating costs. Therefore “net contribution” here is a simplified model measure, not full accounting profit.</li></ul>
+<p><b>Teacher’s marking principle:</b> Accept different recommendations when students support them with figures from their own simulation, explain the trade-off between revenue and walking risk, and acknowledge model limitations.</p>
+</div></section>
+</div>
+<footer>Created by Dr. Kiran Mayi Audina · IHM Shri Shakti · Works offline · Your notes stay in this browser</footer>
+
+<script src="script.js" defer></script></body></html>
